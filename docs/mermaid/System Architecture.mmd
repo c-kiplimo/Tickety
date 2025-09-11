@@ -1,0 +1,55 @@
+flowchart TD
+    subgraph ClientLayer [Client Layer]
+        WebApp[Web App React/Angular]
+        MobileApp[Mobile App Flutter/React Native]
+        AdminPanel[Admin Dashboard]
+        ScannerApp[Scanner App]
+    end
+
+    subgraph APILayer [API Layer]
+        GW[API Gateway<br/>Kong/Traefik]
+    end
+
+    subgraph Microservices [Microservices Layer]
+        AuthS[Auth Service<br/>JWT Auth]
+        EventS[Event Service]
+        BookingS[Booking Service]
+        PaymentS[Payment Service<br/>M-Pesa Gateway]
+        NotificationS[Notification Service]
+        ValidationS[Validation Service]
+    end
+
+    subgraph DataLayer [Data Layer]
+        DB1[(PostgreSQL:<br/>Users, Events, Bookings)]
+        DB2[(MongoDB:<br/>Tickets, QR Data)]
+        Cache[(Redis:<br/>Sessions, Cache)]
+        Storage[(S3/MinIO:<br/>QR Codes, Attachments)]
+    end
+
+    subgraph ExternalServices [External Services]
+        MPesa[[M-Pesa API]]
+        EmailService[[Email Service]]
+        SMSService[[SMS Gateway]]
+    end
+
+    WebApp --> GW
+    MobileApp --> GW
+    AdminPanel --> GW
+    ScannerApp --> GW
+    GW --> AuthS
+    GW --> EventS
+    GW --> BookingS
+    GW --> PaymentS
+    GW --> ValidationS
+    AuthS --> DB1
+    AuthS --> Cache
+    EventS --> DB1
+    BookingS --> DB1
+    BookingS --> DB2
+    PaymentS --> DB1
+    ValidationS --> DB2
+    ValidationS --> Cache
+    BookingS --> NotificationS
+    PaymentS --> MPesa
+    NotificationS --> EmailService
+    NotificationS --> SMSService

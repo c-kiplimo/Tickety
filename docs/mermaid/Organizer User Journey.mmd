@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant O as Organizer (User)
+    participant GW as API Gateway
+    participant Auth as Auth Service
+    participant Event as Event Service
+    participant DB as PostgreSQL
+    O ->> GW: POST /api/events (with CreateEventRequest JWT)
+    GW ->> Auth: Validate JWT Token
+    Auth -->> GW: Token Valid (User ID)
+    GW ->> Event: Forward Request (with User ID)
+    Event ->> Event: Validate request & capacity
+    Event ->> DB: Save new Event (set organizerId)
+    DB -->> Event: Saved Event Record
+    Event -->> GW: 201 Created (Event Details)
+    GW -->> O: Event Created Successfully

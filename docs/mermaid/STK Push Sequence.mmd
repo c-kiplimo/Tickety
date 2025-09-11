@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant A as Attendee
+    participant GW as API Gateway
+    participant Booking as Booking Service
+    participant Payment as Payment Service
+    participant MPesa as M-Pesa API
+    participant Callback as Callback Handler
+    participant DB as Database
+    A ->> GW: POST /api/bookings
+    GW ->> Booking: Create booking
+    Booking ->> DB: Save booking (PENDING)
+    Booking ->> Payment: Initiate payment
+    Payment ->> Payment: Generate STK request
+    Payment ->> MPesa: POST stkpush/v1/processrequest
+    MPesa -->> A: STK Push prompt
+    MPesa -->> Payment: Response with CheckoutRequestID
+    A ->> A: Enter M-Pesa PIN
+    MPesa ->> Callback: POST payment result
+    Callback ->> Payment: Process callback
+    Payment ->> DB: Update booking status
+    Payment ->> Booking: Notify payment result
+    Booking ->> DB: Generate tickets on success

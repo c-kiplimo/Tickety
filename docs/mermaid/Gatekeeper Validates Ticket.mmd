@@ -1,0 +1,9 @@
+flowchart LR
+    A[Scan QR Code] --> B[Validate Authenticity]
+    B --> C{Valid?}
+    C -->|Yes| D[Check Usage Status]
+    C -->|No| E[Reject - Invalid Ticket]
+    D --> F{Used?}
+    F -->|No| G[Mark as Used]
+    F -->|Yes| H[Reject - Already Used]
+    G --> I[Grant Entry]

@@ -1,0 +1,37 @@
+sequenceDiagram
+    participant A as Attendee
+    participant GW as API Gateway
+    participant Booking as Booking Service
+    participant Payment as Payment Service
+    participant MPesa as M-Pesa API
+    participant Callback as Callback Endpoint
+    participant Notify as Notification Service
+    participant DB as Database
+    A ->> GW: POST /api/bookings (BookTicketsRequest)
+    GW ->> Booking: Forward Request
+    Booking ->> Booking: Reserve tickets<br/>Check availability
+    Booking ->> DB: Create Booking (Status: PENDING)
+    Booking ->> Payment: Initiate Payment(totalAmount, customerInfo.phone)
+    Payment ->> Payment: Generate STK Push Request<br/>(with timestamp & password)
+    Payment ->> MPesa: Initiate STK Push (MpesaStkPushRequest)
+    MPesa -->> A: 💬 STK Push Prompt on Phone
+    MPesa -->> Payment: MpesaStkPushResponse<br/>(checkoutRequestId)
+    Payment -->> Booking: Payment Initiated (checkoutRequestId)
+    Booking -->> A: BookTicketsResponse<br/>"Enter your M-Pesa PIN"
+    Note over A, MPesa: User enters PIN on their phone
+    MPesa ->> Callback: POST Payment Result (MpesaCallback)
+    Callback ->> Payment: Process Callback
+    Payment ->> Payment: Parse callbackMetadata for mpesaReceiptNumber
+
+    alt ResultCode == 0 (Success)
+        Payment ->> DB: Update Booking: Status=COMPLETED,<br/>add mpesaReceiptNumber
+        Payment ->> Booking: Confirm Payment Success
+        Booking ->> DB: Generate Tickets & QR Codes
+        Booking ->> Notify: Send Tickets & Receipt
+        Notify ->> A: Send Email & SMS with tickets
+    else ResultCode != 0 (Failed)
+        Payment ->> DB: Update Booking: Status=FAILED
+        Payment ->> Booking: Confirm Payment Failure
+        Booking ->> DB: Release reserved tickets
+        Notify ->> A: Send Failure SMS/Email
+    end

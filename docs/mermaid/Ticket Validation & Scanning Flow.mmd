@@ -1,0 +1,25 @@
+sequenceDiagram
+    participant S as Scanner (Gatekeeper)
+    participant GW as API Gateway
+    participant Val as Validation Service
+    participant DB as MongoDB (Tickets)
+    participant RD as Redis (Cache)
+    S ->> GW: POST /api/validate (ScanTicketRequest, JWT)
+    GW ->> Val: Forward Request
+    Val ->> DB: Find Ticket by ID & QR code secret
+    DB -->> Val: Ticket Data (with isUsed flag)
+
+    alt Ticket is Valid & Not Used
+        Val ->> DB: Update Ticket: isUsed=true,<br/>scannedBy, usedAt
+        Val ->> RD: Cache scan result (prevent replay)
+        Val -->> GW: 200 - ScanTicketResponse(Success: true)
+        GW -->> S: "Ticket is valid. Welcome [CustomerName]!"
+    else Ticket Already Used
+        Val ->> RD: Check recent scan in cache
+        RD -->> Val: Timestamp of previous scan
+        Val -->> GW: 200 - ScanTicketResponse(Success: false)
+        GW -->> S: "WARNING: Ticket was already used at [Timestamp]!"
+    else Ticket Not Found
+        Val -->> GW: 404 - Error
+        GW -->> S: "Invalid ticket code."
+    end
