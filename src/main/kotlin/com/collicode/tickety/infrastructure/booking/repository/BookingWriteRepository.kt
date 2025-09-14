@@ -1,0 +1,3 @@
+package com.collicode.tickety.infrastructure.booking.repository
+
+interface BookingWriteRepository
