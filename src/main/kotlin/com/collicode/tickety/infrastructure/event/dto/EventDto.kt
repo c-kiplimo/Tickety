@@ -5,10 +5,11 @@ import java.util.*
 
 data class EventRequest(
     val eventId: Long? = null,
+    val organizationId: Long,
     val title: String,
     val description: String,
     val date: LocalDateTime,
-    val location: String,
+    val location: Location,
     val ticketTypes: List<TicketType>,
     val totalCapacity: Int
 )
