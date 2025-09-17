@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
 
 @Repository
-class EventWriteRepositoryImpl (
-    private val r2dbcEntityTemplate: R2dbcEntityTemplate
+open class EventWriteRepositoryImpl (
+     val r2dbcEntityTemplate: R2dbcEntityTemplate
 ): EventWriteRepository {
     override fun createEvent(model: EventWriteModel): Mono<Unit> {
         return r2dbcEntityTemplate.insert(model)

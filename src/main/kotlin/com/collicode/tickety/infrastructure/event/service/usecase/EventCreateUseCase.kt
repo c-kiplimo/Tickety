@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 @Service
 class EventCreateUseCase(
     private val eventWriteRepository: EventWriteRepository,
-    private val idService: IdService
+     val idService: IdService
 ) : ActionWriteService<EventRequest, Unit> {
     override fun executeAction(request: EventRequest): Mono<Unit> {
         val eventWriteModel = EventWriteModel(

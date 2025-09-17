@@ -3,6 +3,7 @@ package com.collicode.tickety.infrastructure.event.repository.impl
 import com.collicode.tickety.infrastructure.event.repository.EventReadRepository
 import com.collicode.tickety.infrastructure.event.repository.model.EventReadModel
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
+
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 
