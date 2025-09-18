@@ -7,4 +7,6 @@ interface EventWriteRepository {
 
 
     fun createEvent(model: EventWriteModel): Mono<Unit>
+    fun updateEvent(model: EventWriteModel): Mono<Unit>
+    fun deleteEvent(recordId: Long): Mono<Unit>
 }

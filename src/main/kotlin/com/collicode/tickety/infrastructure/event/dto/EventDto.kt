@@ -15,6 +15,10 @@ data class EventRequest(
     val totalCapacity: Int,
     val auditInfo: AuditInfo? = null
 )
+data class ApiDeleteRequest(
+    val eventId: Long,
+    val organizationId: Long? = null,
+)
 
 data class Location(
     val venue: String,
