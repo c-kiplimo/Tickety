@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono
 @Service
 class EventUpdateAction (
     private val useCase: EventUpdateUseCase,
-): ActionWorkFlowService<EventRequest>  {
+): ActionWorkFlowService< EventRequest>  {
     override fun validate(request: EventRequest): Mono<EventRequest> {
         TODO("Not yet implemented")
     }
@@ -23,5 +23,6 @@ class EventUpdateAction (
             executeAction = useCase::executeAction
         )
     }
+
 
 }

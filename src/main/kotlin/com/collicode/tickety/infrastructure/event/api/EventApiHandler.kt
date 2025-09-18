@@ -3,9 +3,11 @@ package com.collicode.tickety.infrastructure.event.api
 import com.collicode.common.api.wrapRequestWithBodyInApiResponse
 import com.collicode.common.dto.ApiRequest
 import com.collicode.common.util.toObject
+import com.collicode.tickety.infrastructure.event.dto.ApiDeleteRequest
 
 import com.collicode.tickety.infrastructure.event.dto.EventRequest
 import com.collicode.tickety.infrastructure.event.service.actions.EventCreateAction
+import com.collicode.tickety.infrastructure.event.service.actions.EventDeleteAction
 import com.collicode.tickety.infrastructure.event.service.actions.EventUpdateAction
 import com.google.gson.reflect.TypeToken
 import org.springframework.stereotype.Service
@@ -17,6 +19,7 @@ import reactor.core.publisher.Mono
 class EventApiHandler (
     val eventCreateAction: EventCreateAction,
     val eventUpdateAction: EventUpdateAction,
+    val eventDeleteAction: EventDeleteAction,
 ){
     fun createEvent(serverRequest: ServerRequest): Mono<ServerResponse> {
         return wrapRequestWithBodyInApiResponse(
@@ -44,11 +47,12 @@ class EventApiHandler (
         ){requestBody, auditInfo ->
             val apiRequestType = object : TypeToken<ApiRequest<EventRequest>>() {}.type
             val request: ApiRequest<EventRequest> =
-                JsonHelper.toObject(requestBody, apiRequestType)
+                toObject(requestBody, apiRequestType)
 
             val eventId: Long = serverRequest.pathVariable("id").toLong()
             eventUpdateAction.processRequest(
-                request.payload.copy(eventId = eventId, auditInfo = auditInfo)
+                request.payload.copy(
+                    eventId = eventId, auditInfo = auditInfo)
             )
         }
     }
@@ -58,8 +62,12 @@ class EventApiHandler (
             resource = RESOURCE_NAME,
             action = DELETE,
             serverRequest = serverRequest,
-        ){serveInRequest, _ ->
-            val eventId: Long = serveInRequest.pathVariable
+        ){serverRequest, _ ->
+            val eventId: Long = serverRequest.pathVariable("id").toLong()
+
+            val deleteRequest = ApiDeleteRequest(eventId = eventId)
+
+            eventDeleteAction.processRequest(deleteRequest)
 
         }
     }

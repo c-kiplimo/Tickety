@@ -19,8 +19,8 @@ class EventDeleteAction (
     override fun processRequest(request: ApiDeleteRequest): Mono<ActionResponse> {
        return handleActionExecution(
            input = request,
-           validate = ::validate,
-           performAction = useCase::executeAction
+           validateInput = ::validate,
+           executeAction = useCase::executeAction
        )
     }
 
