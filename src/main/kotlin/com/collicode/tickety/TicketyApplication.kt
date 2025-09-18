@@ -5,12 +5,11 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication(
     scanBasePackages = [
-        "com.collicode.tickety",
-        "com.collicode.common"
+        "com.collicode"
     ]
 )
 class TicketyApplication
 
 fun main(args: Array<String>) {
-	runApplication<TicketyApplication>(*args)
+    runApplication<TicketyApplication>(*args)
 }
