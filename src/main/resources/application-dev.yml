@@ -14,7 +14,7 @@ spring:
     baseline-on-migrate: true
     locations: ${FLYWAY_MIGRATION_LOCATIONS:classpath:db/migration}
     fail-on-missing-locations: true
-    schemas: ${DATABASE_NAME:profile_platform}
+    schemas: ${DATABASE_NAME:tickety}
     table: flyway_schema_history
     connect-retries: 3
     connect-retries-interval: 60

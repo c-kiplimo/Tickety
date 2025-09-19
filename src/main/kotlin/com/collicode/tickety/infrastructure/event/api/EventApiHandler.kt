@@ -1,5 +1,6 @@
 package com.collicode.tickety.infrastructure.event.api
 
+import com.collicode.common.api.wrapBodyLessRequestApiResponse
 import com.collicode.common.api.wrapRequestWithBodyInApiResponse
 import com.collicode.common.dto.ApiRequest
 import com.collicode.common.util.toObject
@@ -58,13 +59,12 @@ class EventApiHandler (
     }
 
     fun deleteEvent(serverRequest: ServerRequest): Mono<ServerResponse> {
-        return wrapRequestWithBodyInApiResponse(
+        return wrapBodyLessRequestApiResponse(
             resource = RESOURCE_NAME,
             action = DELETE,
             serverRequest = serverRequest,
-        ){serverRequest, _ ->
-            val eventId: Long = serverRequest.pathVariable("id").toLong()
-
+        ){serverInRequest,_ ->
+            val eventId: Long = serverInRequest.pathVariable("id").toLong()
             val deleteRequest = ApiDeleteRequest(eventId = eventId)
 
             eventDeleteAction.processRequest(deleteRequest)

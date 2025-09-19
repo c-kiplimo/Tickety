@@ -7,6 +7,7 @@ import com.collicode.tickety.infrastructure.event.service.Impl.EventQueryService
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.relational.core.query.Criteria
+import org.springframework.data.relational.core.query.Query.query
 import org.springframework.data.relational.core.query.Update
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
@@ -21,28 +22,27 @@ open class EventWriteRepositoryImpl (
     }
 
     override fun updateEvent(model: EventWriteModel): Mono<Unit> {
-        return r2dbcEntityTemplate.update(EventWriteModel::class.java, model)
-            .matching(
+        val query = query(Criteria.where("record_id").`is`(model.recordId))
 
-                Query.query(Criteria.where("record_id").`is`(model.recordId))
-            )
-        .apply(
-            Update.update("organization_id", model.organizationId)
-                .set("title", model.title)
-                .set("description",model.description)
-                .set("date", model.date)
-                .set("location", model.location)
-                .set("ticketTypes", model.ticketTypes)
-                .set("totalCapacity", model.totalCapacity)
-                .set("bookedCount", model.bookedCount)
-                .set("isActive", model.isActive)
-                .set("updatedAt",model.updatedAt)
-        ) .asUnit()
+        val update = Update.update("organization_id", model.organizationId)
+            .set("title", model.title)
+            .set("description", model.description)
+            .set("date", model.date)
+            .set("location", model.location)
+            .set("ticketTypes", model.ticketTypes)
+            .set("totalCapacity", model.totalCapacity)
+            .set("bookedCount", model.bookedCount)
+            .set("isActive", model.isActive)
+            .set("updatedAt", model.updatedAt)
+
+        return r2dbcEntityTemplate.update(query, update, EventWriteModel::class.java)
+            .asUnit()
     }
+
 
     override fun deleteEvent(recordId: Long): Mono<Unit> {
         return r2dbcEntityTemplate.delete(EventWriteModel::class.java)
-            .matching(Query.query(Criteria.where("record_id").`is`(recordId)))
+            .matching(query(Criteria.where("record_id").`is`(recordId)))
             .all()
             .asUnit()
     }
