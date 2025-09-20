@@ -3,9 +3,13 @@ package com.collicode.tickety
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@SpringBootApplication
+@SpringBootApplication(
+    scanBasePackages = [
+        "com.collicode"
+    ]
+)
 class TicketyApplication
 
 fun main(args: Array<String>) {
-	runApplication<TicketyApplication>(*args)
+    runApplication<TicketyApplication>(*args)
 }

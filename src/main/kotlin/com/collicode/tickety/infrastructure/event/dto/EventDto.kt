@@ -1,5 +1,6 @@
 package com.collicode.tickety.infrastructure.event.dto
 
+import com.collicode.common.util.AuditInfo
 import java.time.LocalDateTime
 import java.util.*
 
@@ -11,7 +12,12 @@ data class EventRequest(
     val date: LocalDateTime,
     val location: Location,
     val ticketTypes: List<TicketType>,
-    val totalCapacity: Int
+    val totalCapacity: Int,
+    val auditInfo: AuditInfo? = null
+)
+data class ApiDeleteRequest(
+    val eventId: Long,
+    val organizationId: Long? = null,
 )
 
 data class Location(
