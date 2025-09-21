@@ -10,10 +10,10 @@ import reactor.core.publisher.Mono
 
 @Service
 class EventCreateAction(
-     val useCase: EventCreateUseCase,
-): ActionWorkFlowService<EventRequest> {
+    val useCase: EventCreateUseCase,
+) : ActionWorkFlowService<EventRequest> {
     override fun validate(request: EventRequest): Mono<EventRequest> {
-        TODO("Not yet implemented")
+        return Mono.just(request)
     }
 
     override fun processRequest(request: EventRequest): Mono<ActionResponse> {

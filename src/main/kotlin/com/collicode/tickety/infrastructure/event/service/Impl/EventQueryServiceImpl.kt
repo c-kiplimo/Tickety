@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 
 @Service
-class EventQueryServiceImpl (
+class EventQueryServiceImpl(
     private val eventReadRepository: EventReadRepository
-): EventQueryService {
-    override fun fetchAllPublicEvents(queryMap: Map<String, String>): Flux<EventRequest> {
-        return eventReadRepository.fetchAllPublicEvents(queryMap)
+) : EventQueryService {
+    override fun fetchAllEvents(queryMap: Map<String, String>): Flux<EventRequest> {
+        return eventReadRepository.fetchAllEvents(queryMap)
             .map { it.toResponse() }
     }
 }

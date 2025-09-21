@@ -3,8 +3,7 @@ package com.collicode.tickety.infrastructure.event.api
 const val BASE_ROUTE = "/api/v1/events"
 
 
-const val UPDATE_EVENT = "$BASE_ROUTE/{eventId}"
-const val DELETE_EVENT = "$BASE_ROUTE/{eventId}"
+const val EVENT_BY_ID = "$BASE_ROUTE/{eventId}"
 
 const val RESOURCE_NAME = "resource_name"
 const val CREATE = "CREATE"

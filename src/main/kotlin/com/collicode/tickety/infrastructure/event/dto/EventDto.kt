@@ -15,6 +15,19 @@ data class EventRequest(
     val totalCapacity: Int,
     val auditInfo: AuditInfo? = null
 )
+
+data class EventResponse(
+    val eventId: Long? = null,
+    val organizationId: Long,
+    val title: String,
+    val description: String,
+    val date: LocalDateTime,
+    val location: Location,
+    val ticketTypes: List<TicketType>,
+    val totalCapacity: Int,
+    val auditInfo: AuditInfo? = null
+)
+
 data class ApiDeleteRequest(
     val eventId: Long,
     val organizationId: Long? = null,
@@ -32,30 +45,17 @@ data class Coordinates(
     val lng: Double
 )
 
-sealed class TicketType(
-    open val id: UUID,
-    open val name: String,
-    open val price: Double,
-    open val quantity: Int,
-    open val maxPerOrder: Int,
-    open val available: Boolean
-) {
-    data class SingleTicket(
-        override val id: UUID = UUID.randomUUID(),
-        override val name: String,
-        override val price: Double,
-        override val quantity: Int,
-        override val maxPerOrder: Int,
-        override val available: Boolean = true
-    ) : TicketType(id, name, price, quantity, maxPerOrder, available)
-
-    data class GroupTicket(
-        override val id: UUID = UUID.randomUUID(),
-        override val name: String,
-        override val price: Double,
-        override val quantity: Int,
-        override val maxPerOrder: Int,
-        val groupSize: Int,
-        override val available: Boolean = true
-    ) : TicketType(id, name, price, quantity, maxPerOrder, available)
-}
+/**
+ * TicketType is now a plain data class.
+ * - Use `groupSize = null` for single tickets.
+ * - Provide a number for `groupSize` to represent group tickets.
+ */
+data class TicketType(
+    val id: UUID? = UUID.randomUUID(),
+    val name: String,
+    val price: Double,
+    val quantity: Int,
+    val maxPerOrder: Int,
+    val available: Boolean = true,
+    val groupSize: Int? = null
+)
