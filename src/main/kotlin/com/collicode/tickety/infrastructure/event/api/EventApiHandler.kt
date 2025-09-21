@@ -1,12 +1,14 @@
 package com.collicode.tickety.infrastructure.event.api
 
 import com.collicode.common.api.wrapBodyLessRequestApiResponse
+import com.collicode.common.api.wrapInFluxApiResponse
 import com.collicode.common.api.wrapRequestWithBodyInApiResponse
 import com.collicode.common.dto.ApiRequest
 import com.collicode.common.util.toObject
 import com.collicode.tickety.infrastructure.event.dto.ApiDeleteRequest
 
 import com.collicode.tickety.infrastructure.event.dto.EventRequest
+import com.collicode.tickety.infrastructure.event.service.EventQueryService
 import com.collicode.tickety.infrastructure.event.service.actions.EventCreateAction
 import com.collicode.tickety.infrastructure.event.service.actions.EventDeleteAction
 import com.collicode.tickety.infrastructure.event.service.actions.EventUpdateAction
@@ -17,20 +19,21 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 
 @Service
-class EventApiHandler (
+class EventApiHandler(
     val eventCreateAction: EventCreateAction,
     val eventUpdateAction: EventUpdateAction,
     val eventDeleteAction: EventDeleteAction,
-){
+    val eventQueryService: EventQueryService
+) {
     fun createEvent(serverRequest: ServerRequest): Mono<ServerResponse> {
         return wrapRequestWithBodyInApiResponse(
             resource = RESOURCE_NAME,
             action = CREATE,
             serverRequest = serverRequest,
-        ){ requestBody, auditInfo ->
+        ) { requestBody, auditInfo ->
             val apiRequestType = object : TypeToken<ApiRequest<EventRequest>>() {}.type
             val request: ApiRequest<EventRequest> =
-               toObject(requestBody, apiRequestType)
+                toObject(requestBody, apiRequestType)
 
             eventCreateAction.processRequest(
                 request.payload.copy(
@@ -45,7 +48,7 @@ class EventApiHandler (
             resource = RESOURCE_NAME,
             action = UPDATE,
             serverRequest = serverRequest,
-        ){requestBody, auditInfo ->
+        ) { requestBody, auditInfo ->
             val apiRequestType = object : TypeToken<ApiRequest<EventRequest>>() {}.type
             val request: ApiRequest<EventRequest> =
                 toObject(requestBody, apiRequestType)
@@ -53,7 +56,8 @@ class EventApiHandler (
             val eventId: Long = serverRequest.pathVariable("id").toLong()
             eventUpdateAction.processRequest(
                 request.payload.copy(
-                    eventId = eventId, auditInfo = auditInfo)
+                    eventId = eventId, auditInfo = auditInfo
+                )
             )
         }
     }
@@ -63,11 +67,24 @@ class EventApiHandler (
             resource = RESOURCE_NAME,
             action = DELETE,
             serverRequest = serverRequest,
-        ){serverInRequest,_ ->
+        ) { serverInRequest, _ ->
             val eventId: Long = serverInRequest.pathVariable("id").toLong()
             val deleteRequest = ApiDeleteRequest(eventId = eventId)
 
             eventDeleteAction.processRequest(deleteRequest)
+
+        }
+    }
+
+    fun fetchAllEvents(serverRequest: ServerRequest): Mono<ServerResponse> {
+        return wrapInFluxApiResponse(
+            resource = RESOURCE_NAME,
+            action = "FETCH.ALL",
+            serverRequest = serverRequest,
+        ) { serverInRequest, _ ->
+            val queryMap = serverInRequest.queryParams().toSingleValueMap()
+
+            eventQueryService.fetchAllEvents(queryMap)
 
         }
     }

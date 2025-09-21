@@ -2,13 +2,13 @@ spring:
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/tickety
     username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:12648}
+    password: ${DB_PASSWORD:smartcode}
     properties:
       schema: tickety
 
   flyway:
     user: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:12648}
+    password: ${DB_PASSWORD:smartcode}
     enabled: true
     validate-on-migrate: true
     baseline-on-migrate: true

@@ -4,5 +4,5 @@ import com.collicode.tickety.infrastructure.event.repository.model.EventReadMode
 import reactor.core.publisher.Flux
 
 interface EventReadRepository {
-    fun fetchAllPublicEvents(queryMap: Map<String, String>): Flux<EventReadModel>
+    fun fetchAllEvents(queryMap: Map<String, String>): Flux<EventReadModel>
 }
