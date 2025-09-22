@@ -23,7 +23,7 @@ data class EventWriteModel(
     val updatedAt: LocalDateTime? = null,
     val auditInfo: Json? = null,
 )
-
+@Table("events")
 data class EventReadModel(
     val recordId: Long,
     val organizationId: Long,

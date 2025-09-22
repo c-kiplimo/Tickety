@@ -25,7 +25,7 @@ class EventApiResource {
                 .and(accept(MediaType.APPLICATION_JSON)),
             eventApiHandler::deleteEvent
         ).andRoute(
-            DELETE(BASE_ROUTE)
+            GET(BASE_ROUTE)
                 .and(accept(MediaType.APPLICATION_JSON)),
             eventApiHandler::fetchAllEvents
         )

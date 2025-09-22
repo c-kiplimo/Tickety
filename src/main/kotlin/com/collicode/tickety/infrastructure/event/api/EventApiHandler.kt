@@ -53,7 +53,7 @@ class EventApiHandler(
             val request: ApiRequest<EventRequest> =
                 toObject(requestBody, apiRequestType)
 
-            val eventId: Long = serverRequest.pathVariable("id").toLong()
+            val eventId: Long = serverRequest.pathVariable("eventId").toLong()
             eventUpdateAction.processRequest(
                 request.payload.copy(
                     eventId = eventId, auditInfo = auditInfo
@@ -68,7 +68,7 @@ class EventApiHandler(
             action = DELETE,
             serverRequest = serverRequest,
         ) { serverInRequest, _ ->
-            val eventId: Long = serverInRequest.pathVariable("id").toLong()
+            val eventId: Long = serverInRequest.pathVariable("eventId").toLong()
             val deleteRequest = ApiDeleteRequest(eventId = eventId)
 
             eventDeleteAction.processRequest(deleteRequest)

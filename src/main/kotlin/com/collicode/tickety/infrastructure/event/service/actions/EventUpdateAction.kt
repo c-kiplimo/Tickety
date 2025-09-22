@@ -13,7 +13,7 @@ class EventUpdateAction (
     private val useCase: EventUpdateUseCase,
 ): ActionWorkFlowService<EventRequest>  {
     override fun validate(request: EventRequest): Mono<EventRequest> {
-        TODO("Not yet implemented")
+        return Mono.just(request)
     }
 
     override fun processRequest(request: EventRequest): Mono<ActionResponse> {

@@ -13,7 +13,7 @@ class EventDeleteAction (
     private val useCase: EventDeleteUseCase
 ): ActionWorkFlowService<ApiDeleteRequest>{
     override fun validate(request: ApiDeleteRequest): Mono<ApiDeleteRequest> {
-        TODO("Not yet implemented")
+       return Mono.just(request)
     }
 
     override fun processRequest(request: ApiDeleteRequest): Mono<ActionResponse> {
